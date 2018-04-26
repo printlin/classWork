@@ -16,7 +16,7 @@
 	</resultMap-->
 	<select id="test1" resultType="String">
 		select class.name as className from student,class where student.did=class.did and student.username IN
-			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			<foreach item="item" collection="list" open="(" separator="," close=")">
 				#{item}
 			</foreach>
 	</select>
