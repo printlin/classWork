@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    	 http://www.springframework.org/schema/beans/spring-beans.xsd
+     	 http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd
+         http://www.springframework.org/schema/tx
+     	 http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <bean id="comboPooledDataSourceID" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/ssmclass"/>
+        <property name="user" value="root"/>
+        <property name="password" value="123456"/>
+        <property name="initialPoolSize" value="3"/>
+        <property name="maxPoolSize" value="10"/>
+        <property name="maxStatements" value="100"/>
+        <property name="acquireIncrement" value="2"/>
+        <property name="idleConnectionTestPeriod" value="7200"/>
+    </bean>
+
+    <bean id="sqlSessionFactoryBeanID" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <property name="dataSource" ref="comboPooledDataSourceID"/>
+    </bean>
+
+    <!-- 配置Mybatis的事务管理器，即因为Mybatis底层用的是JDBC事务管事器，所以在这里依然配置JDBC事务管理器 -->
+    <!--<bean id="dataSourceTransactionManagerID" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+        <!--<property name="dataSource" ref="comboPooledDataSourceID"/>-->
+    <!--</bean>-->
+
+    <!--<tx:advice id="tx" transaction-manager="dataSourceTransactionManagerID">-->
+        <!--<tx:attributes>-->
+            <!--<tx:method name="add*" propagation="REQUIRED"/>&lt;!&ndash; 以add开头的方法必须使用事务 &ndash;&gt;-->
+            <!--<tx:method name="delete*" propagation="REQUIRED"/>-->
+            <!--<tx:method name="update*" propagation="REQUIRED"/>-->
+            <!--<tx:method name="*" propagation="SUPPORTS"/>&lt;!&ndash; 其他所有方法事务根据方法本身确定 &ndash;&gt;-->
+        <!--</tx:attributes>-->
+    <!--</tx:advice>-->
+
+    <!--<aop:config>-->
+        <!--<aop:pointcut id="pointcut" expression="execution(* service.*.*(..))"/>&lt;!&ndash; service包下的所有返回值、类、方法都开启事务 &ndash;&gt;-->
+        <!--<aop:advisor advice-ref="tx" pointcut-ref="pointcut"/>-->
+    <!--</aop:config>-->
+
+    <bean id="td" class="dao.TestDao">
+        <property name="sqlSessionFactory" ref="sqlSessionFactoryBeanID"/>
+    </bean>
+    <bean id="mt" class="MainTest">
+        <property name="td" ref="td"/>
+        <property name="names">
+            <list>
+                <value>张三</value>
+                <value>王五</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--<context:component-scan base-package="action"/>-->
+
+
+    <!-- 适配器，返回json格式时配置
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list><bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"></bean></list>
+        </property>
+    </bean>-->
+
+    <!-- 文件上传
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="104857600" />
+        <property name="maxInMemorySize" value="4096" />
+        <property name="defaultEncoding" value="UTF-8"></property>
+    </bean>
+    -->
+
+</beans>
