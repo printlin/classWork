@@ -16,7 +16,7 @@
             <!-- 依赖的项目模块的名称 -->
             <artifactId>junit</artifactId>
             <!-- 依赖的版本号 -->
-            <version>4.9</version>
+            <version>4.13.1</version>
             <!-- 依赖的范围, 有 test compile privlege -->
             <scope>test</scope>
         </dependency>
